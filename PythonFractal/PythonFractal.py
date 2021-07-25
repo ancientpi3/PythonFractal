@@ -6,11 +6,11 @@ import cmath
 
 WIDTH = 1200
 HEIGHT = 600
-ITERMAX = 100
+ITERMAX = 10
 iterPerFrame = 100
 FRAMES = 3
 SCALE = 1
-XSHIFT = 0
+XSHIFT = -1.5
 YSHIFT = 0
 FPS = 5
 BAIL = 3
@@ -94,10 +94,11 @@ def RunAnimation(fps,animation):
 #fractal = drawFractal(width,height,100,3,analyzePoint_custom1)
 #isWritten = cv.imwrite('C:/Users/Ethan/source/repos/PythonFractal/PythonFractal/Saved Fractals/custom1.png', fractal)
 #RunAnimation(createAnimation_itersPerFrame(analyzePoint_Mandlebrot,iterPerFrame))
-RunAnimation(FPS,createAnimation_Zoom(analyzePoint_Mandlebrot,.5))
+#RunAnimation(FPS,createAnimation_Zoom(analyzePoint_Mandlebrot,.02))
 #createAndRunAnimation_itersPerFrame(width,height,5,20,analyzePoint_custom1)
-#writer = cv.VideoWriter('C:/Users/Ethan/source/repos/PythonFractal/PythonFractal/Saved Fractals/test1.mp4', fourcc, FPS, (WDITH, HEIGHT))
-#writer.release() 
+writer = cv.VideoWriter('C:/Users/Ethan/source/repos/PythonFractal/PythonFractal/Saved Fractals/test1.mp4', cv.VideoWriter_fourcc(*'mp4v'), FPS, (HEIGHT, WIDTH),True)
+writer.write(createAnimation_Zoom(analyzePoint_Mandlebrot,.02))
+writer.release() 
 
 
 
