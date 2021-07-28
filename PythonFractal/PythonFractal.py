@@ -13,6 +13,7 @@ SCALE = 1
 XSHIFT = 0
 YSHIFT = 0
 BAIL = 3
+
 #ROOTS = [0+1j, 0-1j, -1] #changed to list of roots
 #EPSILON = .001
 MAINIMAGE = None
