@@ -12,7 +12,7 @@ ITERMAX = 50
 SCALE = 1
 XSHIFT = 0
 YSHIFT = 0
-BAIL = 3
+BAIL = 1000
 
 #ROOTS = [0+1j, 0-1j, -1] #changed to list of roots
 #EPSILON = .001
@@ -20,33 +20,10 @@ MAINIMAGE = None
 def onMouse(event, x, y, flags, param):
     if event == cv.EVENT_LBUTTONDOWN:
         print()
-        imagecopy = np.copy(MAINIMAGE)
-        drawIterationPath(coordToComplex(x,y),FUNCTION,imagecopy)
-def drawIterationPath(c,function,image):
-    z=c
-    z = function(z,c)
-    accumulator = 0
-    cv.imshow("Fractal",cv.line(image,complexToCoord(c),complexToCoord(z),[255,0,0]))
-    k=c
-    for i in range(ITERMAX):
-        accumulator = accumulator + z
-        k = function(k,c)
-        z = function(z,c)
-        cv.line(image,complexToCoord(k),complexToCoord(z),[255,0,0])
-        
     
-    average = complexToCoord(accumulator/ITERMAX)
-    image[average[1]][average[0]] = complexToColor(c)
-    cv.imshow("Fractal",image)
-
-
-
 def coordToComplex(x,y, scale=1, shiftx=0, shifty=0):
+    #dddd
     return complex(scale*((x/WIDTH)*2*WidthHeightRatio - 2)+shiftx,scale*((y/HEIGHT)*WidthHeightRatio - 1)+shifty)
-
-
-
-
 def complexToCoord(c,scale=1, shiftx=0, shifty=0):
    # print(c)
     x,y = int(((((c.real-shiftx)/scale)+2)/(2*WidthHeightRatio))*WIDTH), int(((((c.imag-shifty)/scale)+1)/(WidthHeightRatio))*HEIGHT)
@@ -57,24 +34,34 @@ def drawFractal(function,iter=ITERMAX,bail=BAIL):
     image = np.zeros((HEIGHT,WIDTH,3),dtype = 'uint8')
     for x in range(WIDTH):
         for y in range(HEIGHT):
-            c = coordToComplex(x,y)
-            z=c
-            for i in range(iter):
-                z = function(z,c)
-                if (abs(z)>bail):
-                    image[y][x] = [0,0,0]
-                    break
-            image[y][x]=[255,255,255]
+            image[y][x]=function(coordToComplex(x,y))
     return image
 
-def mandlebrot(z,c):
-    return z*z+c
+def mandlebrot(c,iter=ITERMAX,bail=BAIL):
+    z=c
+    acc = 0
+    for i in range(iter):
+        z = z*z+c
+        acc = acc+z
+        if (abs(z.imag) >bail):
+            color = int((i/iter)*255)
+            return [color,color,color]
+        if (abs(z.real) >bail):
+            color = int((i/iter)*255)
+            return [color,color,color]
+
+            
+    averageC = acc/iter
+    color = int(255 * (abs(averageC)))
+    return [color,color,color]
+        
+                    
 
 
 
 
-FUNCTION = mandlebrot
-MAINIMAGE = drawFractal(FUNCTION)
+
+MAINIMAGE = drawFractal(mandlebrot)
 cv.imshow("Fractal",MAINIMAGE)
 cv.setMouseCallback("Fractal", onMouse)
 cv.waitKey(0)
